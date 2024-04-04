@@ -145,6 +145,5 @@ let game = setInterval(drawGame, 100);
 
 
 
-
 //
     
