@@ -24,17 +24,61 @@ snake[0] = {
 };
 
 document.addEventListener("keydown", direction);
+document.addEventListener("touchstart", handleTouchStart);
+document.addEventListener("touchmove", handleTouchMove);
+
 let dir;
+
 function direction(event) {
-  if(event.keyCode == 37 && dir != "right")
+  if (event.keyCode == 37 && dir != "right")
     dir = "left";
-  else if(event.keyCode == 38 && dir != "down")
+  else if (event.keyCode == 38 && dir != "down")
     dir = "up";
-  else if(event.keyCode == 39 && dir != "left")
+  else if (event.keyCode == 39 && dir != "left")
     dir = "right";
-  else if(event.keyCode == 40 && dir != "up")
+  else if (event.keyCode == 40 && dir != "up")
     dir = "down";
 }
+
+let xDown = null;
+let yDown = null;
+
+function handleTouchStart(event) {
+  const firstTouch = event.touches[0];
+  xDown = firstTouch.clientX;
+  yDown = firstTouch.clientY;
+}
+
+function handleTouchMove(event) {
+  if (!xDown || !yDown) {
+    return;
+  }
+
+  let xUp = event.touches[0].clientX;
+  let yUp = event.touches[0].clientY;
+
+  let xDiff = xDown - xUp;
+  let yDiff = yDown - yUp;
+
+  if (Math.abs(xDiff) > Math.abs(yDiff)) { // Most significant direction.
+    if (xDiff > 0 && dir != "right") {
+      dir = "left";
+    } else if (xDiff < 0 && dir != "left") {
+      dir = "right";
+    }
+  } else {
+    if (yDiff > 0 && dir != "down") {
+      dir = "up";
+    } else if (yDiff < 0 && dir != "up") {
+      dir = "down";
+    }
+  }
+
+  // Reset values.
+  xDown = null;
+  yDown = null;
+}
+
 
 function eatTail(head, arr) {
   for(let i = 0; i < arr.length; i++) {
